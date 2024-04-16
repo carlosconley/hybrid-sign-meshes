@@ -71,9 +71,9 @@ void VolumeGridNodeScalarQuantity::buildCustomUI() {
 
     // Set isovalue
     ImGui::PushItemWidth(120);
-    if (ImGui::SliderFloat("##Radius", &isosurfaceLevel.get(), vizRange.first, vizRange.second, "%.4e")) {
+    if (ImGui::SliderFloat("##Radius", &isosurfaceLevel.get(), vizRangeMin.get(), vizRangeMax.get(), "%.4e")) {
       // Note: we intentionally do this rather than calling setIsosurfaceLevel(), because that function immediately
-      // recomputes the level set mesh, which is too expensive during user interaction
+      // recomputes the levelset mesh, which is too expensive during user interaction
       isosurfaceLevel.manuallyChanged();
     }
     ImGui::PopItemWidth();
@@ -171,7 +171,8 @@ void VolumeGridNodeScalarQuantity::createIsosurfaceProgram() {
   // Transform the result to be aligned with our volume's spatial layout
   glm::vec3 scale = parent.gridSpacing();
   for (auto& p : isosurfaceMesh.vertices) {
-    p = p * scale + parent.getBoundMin();
+    // swizzle to account for change of coordinate/buffer ordering in the MC lib
+    p = glm::vec3{p.z, p.y, p.x} * scale + parent.getBoundMin();
   }
 
   std::vector<std::string> isoProgramRules{"SHADE_BASECOLOR", "PROJ_AND_INV_PROJ_MAT",
@@ -218,7 +219,8 @@ SurfaceMesh* VolumeGridNodeScalarQuantity::registerIsosurfaceAsMesh(std::string 
                     parent.getGridNodeDim().z, isosurfaceMesh);
   glm::vec3 scale = parent.gridSpacing();
   for (auto& p : isosurfaceMesh.vertices) {
-    p = p * scale + parent.getBoundMin();
+    // swizzle to account for change of coordinate/buffer ordering in the MC lib
+    p = glm::vec3{p.z, p.y, p.x} * scale + parent.getBoundMin();
   }
 
   return registerSurfaceMesh(structureName, isosurfaceMesh.vertices,
