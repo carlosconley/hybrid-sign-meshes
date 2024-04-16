@@ -9,3 +9,13 @@
     - After insertion and get DS to same assumptions as integer
     - Do cleanup of signpost data after insertion
         - You don't need signpost data after insertion, only while inserting?
+
+# Documentation
+- Intrinsic Triangulations: https://www.cs.cmu.edu/~kmcrane/Projects/NavigatingIntrinsicTriangulations/paper.pdf
+- Integer Coordinates: https://arxiv.org/pdf/2106.00220.pdf
+- Research paper: './report.pdf'
+
+# Things to do
+- Setup geom central repo
+- Get cracking on the original signpost idea
+- Then convert to using hybrid model
